@@ -72,3 +72,5 @@ npm test
 ```
 
 Se [ARKITEKTUR.md](ARKITEKTUR.md) for en beskrivelse af systemet.
+
+http://localhost:3000/sekretaer
