@@ -20,6 +20,15 @@
 - Ventetid = sum af behandlingstid for alle ventende patienter foran.
 - Patient-siden poller hvert 5. sekund.
 - Ingen frontend-framework.
+- Enheder: Patienten bruger mobilen, og sekretæren bruger en computer.
+- Sekretær-siden designes til computerskærm (mindst 1280px bred). Den skal ikke tilpasses mobil.
+- Mobile first-udvikling på patient-siden:
+  - Basis-CSS skrives til en 360px bred skærm.
+  - Større skærme håndteres kun med `@media (min-width: …)` (brudpunkter 600px og 960px), aldrig med `max-width`.
+  - Alle sider har `<meta name="viewport" content="width=device-width, initial-scale=1">`.
+  - Knapper og links er mindst 44×44px.
+  - Brødtekst er mindst 16px (så iOS ikke zoomer ind i formularfelter).
+  - Ingen vandret scroll ved 360px.
 - Alt kode i `app/`. Ingen git-commits, medmindre brugeren beder om det.
 
 ## Review Focus
@@ -100,10 +109,15 @@
 ### Task 3: Frontend (sekretær + patient)
 
 **Files:**
-- Create: `app/public/style.css`, `app/public/sekretaer.html`, `app/public/sekretaer.js`, `app/public/patient.html`, `app/public/patient.js`
+- Create: `app/public/style.css`, `app/public/patient.css`, `app/public/sekretaer.css`, `app/public/sekretaer.html`, `app/public/sekretaer.js`, `app/public/patient.html`, `app/public/patient.js`
 
 **Interfaces:**
 - Consumes: API'et fra Task 2.
+
+Layout (se Global Constraints):
+- `style.css` indeholder kun fælles farver og typografi.
+- `patient.css` er mobile first: én kolonne, centreret med `max-width: 480px` på større skærme.
+- `sekretaer.css` er til computer: formularer og "Tilføj akut patient" står i en venstre kolonne, og køen vises som en tabel til højre.
 
 Sekretær-side:
 - En formular (CPR + prioritet-dropdown med farver) → viser QR + link til den nye patient.
@@ -121,6 +135,10 @@ Patient-side (mobil først):
 
 - [ ] **Step 1:** Implementér filerne.
 - [ ] **Step 2:** `npm start` og åbn `/sekretaer` i en headless browser. Opret 2 patienter, tilføj en akut patient, og åbn den ene patients `/p/<id>`. Forventet: ingen konsolfejl, patient-siden viser nr. 2, ventetid og den gule forsinkelsesboks. Efter "Kald ind" viser den "Det er din tur".
+- [ ] **Step 3: Enheds-tjek.**
+  - Tag screenshots af patient-siden ved 360×740 og sekretær-siden ved 1280×800.
+  - Forventet på patient-siden: ingen vandret scroll (`document.documentElement.scrollWidth <= 360`), og alle knapper er mindst 44px høje.
+  - Forventet på sekretær-siden: formular og kø står side om side, og køen er en tabel.
 
 ### Task 4: README og arkitekturbeskrivelse
 

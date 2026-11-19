@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Din plads i køen</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/patient.css">
+</head>
+<body>
+  <div class="phone">
+  <div class="statusbar" aria-hidden="true"><span id="clock"></span><span class="island"></span><span class="icons">5G <span class="battery"></span></span></div>
+  <main class="wrap">
+    <header class="top">
+      <p class="hospital">Skadestuen</p>
+      <p id="greeting" class="greeting"></p>
+    </header>
+
+    <section id="loading" class="card center">Henter din plads i køen…</section>
+
+    <section id="notfound" class="card center hidden">
+      <h1>Vi kan ikke finde din plads i køen</h1>
+      <p>Henvend dig i skranken.</p>
+    </section>
+
+    <section id="called" class="card turn hidden">
+      <h1>Det er din tur</h1>
+      <p>Gå til skranken.</p>
+    </section>
+
+    <section id="waiting" class="hidden">
+      <div class="card center">
+        <p class="label">Du er nr.</p>
+        <p id="position" class="big"></p>
+        <p class="label">i køen</p>
+      </div>
+
+      <div class="card center">
+        <p class="label">Dit forventede tidspunkt er ca.</p>
+        <p class="time">kl. <span id="eta"></span></p>
+        <p id="eta-hint" class="hint"></p>
+      </div>
+
+      <div id="delay" class="card delay hidden" role="status" aria-live="polite">
+        <p id="delay-text" class="delay-title"></p>
+        <p id="delay-reason" class="delay-reason"></p>
+      </div>
+    </section>
+
+    <section class="card faq">
+      <h2>Spørgsmål og svar</h2>
+      <details>
+        <summary>Hvorfor bliver jeg rykket?</summary>
+        <p>Patienter, der er mere akut syge eller tilskadekomne end dig, bliver behandlet først. Derfor kan din tid blive skubbet, selvom du kom før dem.</p>
+      </details>
+      <details>
+        <summary>Hvordan regnes mit tidspunkt ud?</summary>
+        <p>Ud fra hvor mange patienter der er foran dig, og hvor akutte de er. Mere akutte patienter tager typisk længere tid at behandle.</p>
+      </details>
+      <details>
+        <summary>Skal jeg holde siden åben?</summary>
+        <p>Siden opdaterer sig selv. Du kan altid scanne QR-koden igen eller åbne linket.</p>
+      </details>
+    </section>
+  </main>
+  </div>
+  <script src="/patient.js"></script>
+</body>
+</html>

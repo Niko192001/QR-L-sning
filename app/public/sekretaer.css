@@ -1,0 +1,105 @@
+/* Sekretær-siden: designet til computerskærm (mindst 1280px). */
+
+.bar {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 32px;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.bar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.bar-note {
+  opacity: 0.85;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  padding: 24px 32px;
+  align-items: start;
+}
+
+.side {
+  display: grid;
+  gap: 24px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.queue-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.count {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+td.num {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+td.actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td.actions button + button {
+  margin-left: 8px;
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+}
+
+dialog {
+  border: none;
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  max-width: 420px;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+#qr-link {
+  word-break: break-all;
+}

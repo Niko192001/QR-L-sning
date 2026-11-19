@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sekretær – skadestuekø</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/sekretaer.css">
+</head>
+<body>
+  <header class="bar">
+    <h1>Skadestuekø</h1>
+    <span class="bar-note">Sekretær</span>
+  </header>
+
+  <main class="layout">
+    <aside class="side">
+      <section class="card">
+        <h2>Opret patient</h2>
+        <form id="create-form" novalidate>
+          <div class="field">
+            <label for="cpr">CPR-nummer</label>
+            <input id="cpr" name="cpr" placeholder="DDMMÅÅ-XXXX" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="priority">Prioritet</label>
+            <select id="priority" name="priority"></select>
+          </div>
+          <button type="submit">Opret og vis QR-kode</button>
+          <p id="create-error" class="error" role="alert"></p>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Tilføj akut patient</h2>
+        <p class="muted">Tilføjer en opdigtet, mere akut patient, så patienter med lavere prioritet bliver skubbet tilbage.</p>
+        <form id="urgent-form" novalidate>
+          <div class="field">
+            <label for="urgent-priority">Prioritet</label>
+            <select id="urgent-priority" name="priority"></select>
+          </div>
+          <div class="field">
+            <label for="urgent-reason">Begrundelse</label>
+            <select id="urgent-reason">
+              <option>Trafikulykke indbragt</option>
+              <option>Patient med hjertestop</option>
+              <option>Alvorlig forbrænding</option>
+              <option value="__other">Anden…</option>
+            </select>
+          </div>
+          <div id="other-field" class="field hidden">
+            <label for="urgent-other">Egen begrundelse</label>
+            <input id="urgent-other" autocomplete="off">
+          </div>
+          <button type="submit" class="danger">Tilføj akut patient</button>
+          <p id="urgent-error" class="error" role="alert"></p>
+        </form>
+      </section>
+    </aside>
+
+    <section class="card queue">
+      <div class="queue-head">
+        <h2>Kø <span id="count" class="count"></span></h2>
+        <span class="muted">Opdateres automatisk</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Nr.</th><th>Navn</th><th>Prioritet</th><th>Forventet tidspunkt</th><th></th></tr>
+        </thead>
+        <tbody id="queue-body"></tbody>
+      </table>
+      <p id="empty" class="muted empty hidden">Der er ingen patienter i køen.</p>
+    </section>
+  </main>
+
+  <dialog id="qr-dialog">
+    <h2 id="qr-title">QR-kode</h2>
+    <p class="muted">Patienten scanner koden med sin telefon.</p>
+    <img id="qr-img" alt="QR-kode til patientens side" width="320" height="320">
+    <p><a id="qr-link" target="_blank" rel="noopener"></a></p>
+    <form method="dialog"><button>Luk</button></form>
+  </dialog>
+
+  <script src="/sekretaer.js"></script>
+</body>
+</html>

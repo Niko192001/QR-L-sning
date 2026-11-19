@@ -1,0 +1,195 @@
+/* Patient-siden: mobile first. Basis = 360px skærm, kun min-width media queries. */
+
+.wrap {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.top {
+  text-align: center;
+}
+
+.hospital {
+  margin: 0;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 16px;
+}
+
+.greeting {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.center {
+  text-align: center;
+}
+
+.label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.big {
+  margin: 0;
+  font-size: 88px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.time {
+  margin: 4px 0 0;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.delay {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+  border-width: 2px;
+}
+
+.delay-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.delay-reason {
+  margin: 4px 0 0;
+}
+
+.turn {
+  background: var(--ok-bg);
+  border: 2px solid var(--ok-border);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.turn h1 {
+  font-size: 36px;
+}
+
+.turn p {
+  font-size: 22px;
+  margin: 0;
+}
+
+.faq h2 {
+  font-size: 20px;
+}
+
+.faq details {
+  border-top: 1px solid var(--border);
+}
+
+.faq summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.faq p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+/* Statuslinjen hører kun til telefon-rammen; en rigtig telefon har sin egen. */
+.statusbar {
+  display: none;
+}
+
+/* Større skærme (computer): vis siden inde i en telefon-ramme. */
+@media (min-width: 600px) {
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    background: radial-gradient(circle at 50% 30%, #e9eef4, #c9d2dc);
+  }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    height: min(844px, calc(100vh - 64px));
+    border: 14px solid #111;
+    border-radius: 56px;
+    background: var(--bg);
+    box-shadow: 0 0 0 2px #3a3a3a, 0 30px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    height: 48px;
+    padding: 0 28px;
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .island {
+    width: 110px;
+    height: 30px;
+    border-radius: 20px;
+    background: #111;
+  }
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .battery {
+    width: 24px;
+    height: 12px;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    padding: 1.5px;
+  }
+
+  .battery::after {
+    content: "";
+    display: block;
+    width: 75%;
+    height: 100%;
+    border-radius: 1px;
+    background: currentColor;
+  }
+
+  .wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px 24px;
+    scrollbar-width: none;
+  }
+
+  .wrap::-webkit-scrollbar {
+    display: none;
+  }
+}
