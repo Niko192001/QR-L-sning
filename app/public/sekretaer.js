@@ -2,10 +2,7 @@
   const $ = (s) => document.getElementById(s);
   let priorities = [];
 
-  const etaClock = (min) => {
-    const d = new Date(Date.now() + min * 60000);
-    return `kl. ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  };
+  const etaClock = (min) => `kl. ${Eta.etaClock(min)}`;
   const prio = (level) => priorities.find((p) => p.level === level);
 
   async function api(path, body) {

@@ -28,11 +28,13 @@ flowchart LR
 | **Sekretær-UI** | Opretter patienter, viser QR-kode, viser køen, kalder ind, tilføjer akut patient med begrundelse. |
 | **Patient-UI** | Viser plads i køen, forventet ventetid, forsinkelse + begrundelse og "Det er din tur". Opdaterer sig selv hvert 5. sekund. |
 | **REST API** | `POST /api/patients`, `GET /api/patients`, `GET /api/patients/:id`, `GET /api/patients/:id/qr`, `POST /api/patients/:id/call`, `POST /api/urgent`, `GET /api/priorities` |
-| **Kø-logik** | Sorterer efter triage-prioritet (Rød → Blå) og derefter ankomst. Ventetid = summen af forventet behandlingstid for alle foran. |
+| **Kø-logik** | Sorterer efter triage-prioritet (Rød → Blå) og derefter ankomst. Hver prioritet har en behandlingstid. Den forrestes tid tæller ned i realtid; ventetid = resterende tid for den forreste + fulde tider for de øvrige foran. Bliver den forreste skubbet af en akut patient, gemmes den tid der allerede er brugt. |
 | **Fake CPR** | Validerer formatet og giver et opdigtet navn. Der slås ikke noget op. |
 | **SQLite** | `patients` (id, cpr, navn, prioritet, ankomst, status, sidst viste ventetid, aktuel forsinkelse) og `delays` (patient, minutter, begrundelse, tidspunkt). |
 
-**Forsinkelser:** Hver gang patienten åbner/opdaterer sin side, sammenlignes den aktuelle ventetid med den sidst viste. Stiger den, vises "udskudt med N min." med den seneste begrundelse. Falder den igen (fx når den akutte patient er kaldt ind), forsvinder beskeden. Første visning viser aldrig en forsinkelse.
+**Patientens visning:** Forventet tidspunkt (nu + ventetid) rundet til nærmeste kvarter, plus en nedtælling "Din tur om N min.", der tæller ned minut for minut. Når den rammer 0, vises "Det er snart din tur", indtil sekretæren kalder ind.
+
+**Forsinkelser:** Hver gang patienten åbner/opdaterer sin side, sammenlignes det forventede tidspunkt med det sidst viste. Bliver det mindst 1 min. senere, og er der kommet en mere akut patient siden sidst, vises "udskudt med N min." med den seneste begrundelse. Bliver det tidligere (fx når den akutte patient er kaldt ind), forsvinder beskeden. At tiden bare løber over (sekretæren har ikke kaldt ind endnu), tæller ikke som en forsinkelse. Første visning viser aldrig en forsinkelse.
 
 ## Dataflow: en akut patient skubber en testperson
 
@@ -47,11 +49,11 @@ sequenceDiagram
   API->>DB: gem patient
   API-->>Sek: patient + QR-kode (link til /p/<id>)
   Pat->>API: scanner QR → GET /api/patients/<id>
-  API-->>Pat: nr. 1, ventetid 00:00
+  API-->>Pat: nr. 1, "Det er snart din tur"
   Sek->>API: POST /api/urgent {prioritet: Rød, begrundelse}
   API->>DB: gem akut patient + forsinkelse for alle med lavere prioritet
   Pat->>API: GET /api/patients/<id> (poll)
-  API-->>Pat: nr. 2, ventetid 00:30, "udskudt ca. 30 min. – Trafikulykke indbragt"
+  API-->>Pat: nr. 2, "Din tur om 30 min.", "udskudt ca. 30 min. – Trafikulykke indbragt"
   Sek->>API: POST /api/patients/<id>/call
   Pat->>API: GET /api/patients/<id> (poll)
   API-->>Pat: "Det er din tur"

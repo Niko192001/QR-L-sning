@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { sortQueue, waitMinutes, positionOf, PRIORITIES } = require('../src/queue');
+const { sortQueue, waitMs, positionOf, PRIORITIES } = require('../src/queue');
 const { isValidCpr, fakeName } = require('../src/fakeCpr');
 
 test('PRIORITIES har de fem triage-farver med behandlingstider', () => {
@@ -25,10 +25,39 @@ const q = [
   { id: 'b', priority: 3, arrivedAt: 2 },
 ];
 
-test('waitMinutes summerer behandlingstiden for alle foran', () => {
-  assert.equal(waitMinutes(q, 'a'), 0);
-  assert.equal(waitMinutes(q, 'b'), 30);
-  assert.equal(waitMinutes(q, 'c'), 45);
+const MIN = 60000;
+
+test('waitMs summerer behandlingstiden for alle foran', () => {
+  assert.equal(waitMs(q, 'a', 0), 0);
+  assert.equal(waitMs(q, 'b', 0), 30 * MIN);
+  assert.equal(waitMs(q, 'c', 0), 45 * MIN);
+});
+
+test('waitMs tæller den forrestes tid ned', () => {
+  const live = [
+    { id: 'a', priority: 1, arrivedAt: 1, frontSince: 0, servedMs: 0 },
+    { id: 'b', priority: 3, arrivedAt: 2, frontSince: null, servedMs: 0 },
+    { id: 'c', priority: 4, arrivedAt: 3, frontSince: null, servedMs: 0 },
+  ];
+  assert.equal(waitMs(live, 'b', 10 * MIN), 20 * MIN);
+  assert.equal(waitMs(live, 'c', 10 * MIN), 35 * MIN);
+});
+
+test('waitMs går ikke under nul når den forrestes tid er brugt op', () => {
+  const live = [
+    { id: 'a', priority: 1, arrivedAt: 1, frontSince: 0, servedMs: 0 },
+    { id: 'b', priority: 3, arrivedAt: 2, frontSince: null, servedMs: 0 },
+  ];
+  assert.equal(waitMs(live, 'b', 45 * MIN), 0);
+});
+
+test('waitMs trækker allerede brugt tid fra for en patient der blev skubbet', () => {
+  const live = [
+    { id: 'r', priority: 1, arrivedAt: 3, frontSince: 0, servedMs: 0 },
+    { id: 'g', priority: 3, arrivedAt: 1, frontSince: null, servedMs: 5 * MIN },
+    { id: 'x', priority: 4, arrivedAt: 2, frontSince: null, servedMs: 0 },
+  ];
+  assert.equal(waitMs(live, 'x', 0), 30 * MIN + 10 * MIN);
 });
 
 test('positionOf er 1-baseret plads i den sorterede kø', () => {

@@ -39,7 +39,7 @@
       <div class="card center">
         <p class="label">Dit forventede tidspunkt er ca.</p>
         <p class="time">kl. <span id="eta"></span></p>
-        <p id="eta-hint" class="hint"></p>
+        <p id="countdown" class="countdown" aria-live="off"></p>
       </div>
 
       <div id="delay" class="card delay hidden" role="status" aria-live="polite">
@@ -65,6 +65,7 @@
     </section>
   </main>
   </div>
+  <script src="/eta.js"></script>
   <script src="/patient.js"></script>
 </body>
 </html>

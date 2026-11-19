@@ -7,21 +7,18 @@
     for (const s of sections) $(s).classList.toggle('hidden', s !== name);
   }
 
+  // Statuslinjens ur i telefon-rammen viser det rigtige klokkeslæt.
   const clockOf = (date) =>
     `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
-  function waitText(minutes) {
-    if (minutes === 0) return 'Du er den næste';
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    const parts = [];
-    if (h) parts.push(h === 1 ? '1 time' : `${h} timer`);
-    if (m) parts.push(`${m} min.`);
-    return `Om ca. ${parts.join(' og ')}`;
-  }
+  // Nedtællingen kører lokalt hvert sekund mellem opdateringerne fra serveren.
+  let turnAt = null;
 
   function tick() {
     $('clock').textContent = clockOf(new Date());
+    if (turnAt !== null) {
+      $('countdown').textContent = Eta.countdownText(Math.max(0, (turnAt - Date.now()) / 1000));
+    }
   }
 
   async function refresh() {
@@ -39,8 +36,9 @@
     if (s.status === 'called') return show('called');
 
     $('position').textContent = s.position;
-    $('eta').textContent = clockOf(new Date(Date.now() + s.waitMinutes * 60000));
-    $('eta-hint').textContent = waitText(s.waitMinutes);
+    $('eta').textContent = Eta.etaClock(s.waitMinutes);
+    turnAt = Date.now() + s.waitSeconds * 1000;
+    tick();
     const d = s.delay;
     $('delay').classList.toggle('hidden', !d);
     if (d) {
@@ -51,7 +49,7 @@
   }
 
   tick();
-  setInterval(tick, 10000);
+  setInterval(tick, 1000);
   refresh();
   setInterval(refresh, 5000);
 })();

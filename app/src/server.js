@@ -1,7 +1,7 @@
 const path = require('node:path');
 const express = require('express');
 const QRCode = require('qrcode');
-const { PRIORITIES, positionOf, waitMinutes } = require('./queue');
+const { PRIORITIES } = require('./queue');
 const { isValidCpr, randomCpr } = require('./fakeCpr');
 
 const PUBLIC = path.join(__dirname, '..', 'public');
@@ -25,13 +25,13 @@ function createApp({ store, baseUrl }) {
     res.status(201).json({ patient, url: patientUrl(patient.id), qr: await qrFor(patient.id) });
   });
 
+  const times = (ms) => ({ waitMinutes: Math.ceil(ms / 60000), waitSeconds: Math.ceil(ms / 1000) });
+
   app.get('/api/patients', (req, res) => {
-    const queue = store.listWaiting();
     res.json(
-      queue.map((p) => ({
+      store.listWaiting().map(({ frontSince, servedMs, waitMs, ...p }) => ({
         ...p,
-        position: positionOf(queue, p.id),
-        waitMinutes: waitMinutes(queue, p.id),
+        ...times(waitMs),
         url: patientUrl(p.id),
       }))
     );
@@ -40,15 +40,13 @@ function createApp({ store, baseUrl }) {
   app.get('/api/patients/:id', (req, res) => {
     const patient = store.getPatient(req.params.id);
     if (!patient) return res.status(404).json({ error: 'Patienten findes ikke' });
-    const queue = store.listWaiting();
-    const waiting = patient.status === 'waiting';
-    const wait = waiting ? waitMinutes(queue, patient.id) : 0;
+    const me = store.listWaiting().find((p) => p.id === patient.id);
     res.json({
       name: patient.name,
       status: patient.status,
-      position: waiting ? positionOf(queue, patient.id) : null,
-      waitMinutes: wait,
-      delay: waiting ? store.seeWait(patient.id, wait) : null,
+      position: me ? me.position : null,
+      ...times(me ? me.waitMs : 0),
+      delay: me ? store.seeWait(patient.id, me.waitMs) : null,
     });
   });
 
